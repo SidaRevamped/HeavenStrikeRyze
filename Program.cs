@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -301,7 +301,7 @@ namespace HeavenStrikeRyze
                 }
                 else if (PassiveStack == 4)
                 {
-                    if (candocombo() && waitcombobool)
+                    if (candocombo())
                     {
                         if (_w.IsReady())
                         {
@@ -325,6 +325,72 @@ namespace HeavenStrikeRyze
                         {
                             if (target.IsValidTarget() && !target.IsZombie)
                                 _r.Cast();
+                        }
+                    }
+                    else
+                    {
+                        if (candowaitcombo(waitcombo))
+                        {
+
+                        }
+                        else
+                        {
+                            if (Player.Level <=5 )
+                            {
+                                if (_w.IsReady())
+                                {
+                                    if (target.IsValidTarget() && !target.IsZombie)
+                                        _w.Cast(target);
+                                }
+                                else if (_q.IsReady())
+                                {
+                                    if (target.IsValidTarget() && !target.IsZombie)
+                                        _q.Cast(target);
+                                    else if (target2.IsValidTarget() && !target.IsZombie)
+                                        _q.Cast(target2);
+                                }
+                                else if (_e.IsReady())
+                                {
+                                    if (target.IsValidTarget() && !target.IsZombie)
+                                        _e.Cast(target);
+                                }
+                            }
+                            if (Player.CountEnemiesInRange(1000) == 1 )
+                            {
+                                if (_q.IsReady())
+                                {
+                                    if (_q.GetDamage(target) + Player.GetAutoAttackDamage(target) > target.Health)
+                                    {
+                                        _q.Cast(target);
+                                    }
+                                    if (_q.GetDamage(target2) + Player.GetAutoAttackDamage(target2) > target2.Health)
+                                    {
+                                        _q.Cast(target2);
+                                    }
+                                }
+                                if (_e.IsReady() && _e.GetDamage(target) + Player.GetAutoAttackDamage(target) > target.Health)
+                                {
+                                    _e.Cast(target);
+                                }
+                            }
+                            if (Player.Health*100/Player.MaxHealth <= 25 )
+                            {
+                                if (_q.IsReady())
+                                {
+                                    if (_q.GetDamage(target) + Player.GetAutoAttackDamage(target) > target.Health)
+                                    {
+                                        _q.Cast(target);
+                                    }
+                                    if (_q.GetDamage(target2) + Player.GetAutoAttackDamage(target2) > target2.Health)
+                                    {
+                                        _q.Cast(target2);
+                                    }
+                                }
+                                if (_e.IsReady() && _e.GetDamage(target) + Player.GetAutoAttackDamage(target) > target.Health)
+                                {
+                                    _e.Cast(target);
+                                }
+                            }
                         }
                     }
 

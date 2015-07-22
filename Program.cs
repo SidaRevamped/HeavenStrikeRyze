@@ -825,7 +825,7 @@ namespace HeavenStrikeRyze
                     {
                         if (_q.IsReady())
                         {
-                            if (_w.IsReady((int)_q.Instance.Cooldown) || _e.IsReady((int)_q.Instance.Cooldown) || _r.IsReady((int)_q.Instance.Cooldown))
+                            if (_w.IsReady((int)_q.Instance.Cooldown*1000 ) || _e.IsReady((int)_q.Instance.Cooldown*1000) || _r.IsReady((int)_q.Instance.Cooldown*1000))
                             {
                                 return true;
                             }
@@ -834,7 +834,7 @@ namespace HeavenStrikeRyze
                         }
                         else if (_e.IsReady())
                         {
-                            if (_w.IsReady((int)_q.Instance.Cooldown * 2) || _r.IsReady((int)_q.Instance.Cooldown * 2))
+                            if (_w.IsReady((int)_q.Instance.Cooldown*1000 * 2) || _r.IsReady((int)_q.Instance.Cooldown *1000* 2))
                             {
                                 return true;
                             }
@@ -864,7 +864,7 @@ namespace HeavenStrikeRyze
                     }
                     else
                     {
-                        if (_w.IsReady((int)_q.Instance.Cooldown * 2) || _r.IsReady((int)_q.Instance.Cooldown * 2))
+                        if (_w.IsReady((int)_q.Instance.Cooldown*1000 * 2) || _r.IsReady((int)_q.Instance.Cooldown*1000 * 2))
                         {
                             return true;
                         }
@@ -909,7 +909,7 @@ namespace HeavenStrikeRyze
                     {
                         if (_q.IsReady(timewait))
                         {
-                            if (_w.IsReady((int)_q.Instance.Cooldown + timewait) || _e.IsReady((int)_q.Instance.Cooldown + timewait) || _r.IsReady((int)_q.Instance.Cooldown + timewait))
+                            if (_w.IsReady((int)_q.Instance.Cooldown*1000 + timewait) || _e.IsReady((int)_q.Instance.Cooldown*1000 + timewait) || _r.IsReady((int)_q.Instance.Cooldown*1000 + timewait))
                             {
                                 return true;
                             }
@@ -918,7 +918,7 @@ namespace HeavenStrikeRyze
                         }
                         else if (_e.IsReady(timewait))
                         {
-                            if (_w.IsReady((int)_q.Instance.Cooldown * 2 + timewait) || _r.IsReady((int)_q.Instance.Cooldown * 2 + timewait) )
+                            if (_w.IsReady((int)_q.Instance.Cooldown*1000 * 2 + timewait) || _r.IsReady((int)_q.Instance.Cooldown*1000 * 2 + timewait) )
                             {
                                 return true;
                             }
@@ -948,7 +948,7 @@ namespace HeavenStrikeRyze
                     }
                     else
                     {
-                        if (_w.IsReady((int)_q.Instance.Cooldown * 2 +timewait) || _r.IsReady((int)_q.Instance.Cooldown * 2 + timewait))
+                        if (_w.IsReady((int)_q.Instance.Cooldown*1000 * 2 +timewait) || _r.IsReady((int)_q.Instance.Cooldown*1000 * 2 + timewait))
                         {
                             return true;
                         }
@@ -1019,7 +1019,7 @@ namespace HeavenStrikeRyze
                         x = wcount > x ? wcount : x;
                         x = ecount > x ? ecount : x;
                         x = rcount > x ? rcount : x;
-                        if (Utils.GameTimeTickCount - x >= 9250 && _q.IsReady())
+                        if (Utils.GameTimeTickCount - x >= 5500 && _q.IsReady())
                         {
                             _q.Cast(Player.Position);
                         }

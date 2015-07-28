@@ -212,7 +212,7 @@ namespace HeavenStrikeRyze
             }
             if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo && blockAAcombo)
             {
-                if (Player.Mana > _q.Instance.ManaCost + _w.Instance.ManaCost + _e.Instance.ManaCost && !(_q.IsReady(500) || _w.IsReady(500) || _e.IsReady(500)))
+                if (Player.Mana > _q.Instance.ManaCost + _w.Instance.ManaCost + _e.Instance.ManaCost)
                     _orbwalker.SetAttack(false);
                 else
                     _orbwalker.SetAttack(true);

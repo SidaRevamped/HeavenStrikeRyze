@@ -64,38 +64,32 @@ namespace HeavenStrikeRyze
                     // in investigation
                     var tarqss = tarqs;
                     var tarqsss = tarqs;
-                    MainTarget = tarqss.FirstOrDefault(x => Helper.HasEBuff(x) && Program._q.GetPrediction(x).Hitchance >= HitChance.Low && Program._q.IsReady()
-                        && Program.QlaneClear
-                        && tarqs.Count(y => Helper.HasEBuff(y) && y.Distance(x.Position) <= 300) >= 2
-                        && tarqs.Where(y => Helper.HasEBuff(y) && tarqsss.Count(z => Helper.HasEBuff(z) && z.Distance(y.Position) <= 300) >= 2).Count() >= 3);
+                    MainTarget = tarqss.Where(x => Helper.HasEBuff(x) && Program._q.GetPrediction(x).Hitchance >= HitChance.Low && Program._q.IsReady()
+                        && Program.QlaneClear && Helper.GetchainedTarget(x).Count() >= 3).MaxOrDefault(x => Helper.GetchainedTarget(x).Count());
                     if (MainTarget != null)
                     {
                         Program._q.Cast(Program._q.GetPrediction(MainTarget).UnitPosition);
                     }
 
-                    MainTarget = tars.FirstOrDefault(x => Helper.HasEBuff(x)  && Program._e.IsReady() && Program.ElaneClear
-                        && tarqs.Where(y => y.Distance(x.Position) <= 300).Count() >= 3);
+                    MainTarget = tars.Where(x => Helper.HasEBuff(x)  && Program._e.IsReady() && Program.ElaneClear
+                        && tarqs.Where(y => y.Distance(x.Position) <= 300).Count() >= 3).MaxOrDefault(x => tarqs.Where(y => y.Distance(x.Position) <= 300).Count());
                     if (MainTarget != null)
                     {
                         Program._e.Cast(MainTarget);
                     }
 
-                    MainTarget = tars.FirstOrDefault(x => x.Health <= Helper.Edamge(x) && Program._e.IsReady() && Program.ElaneClear
-                        && tarqs.Where(y => y.Distance(x.Position) <= 300).Count() >= 3);
+                    MainTarget = tars.Where(x => x.Health <= Helper.Edamge(x) && Program._e.IsReady() && Program.ElaneClear
+                        && tarqs.Where(y => y.Distance(x.Position) <= 300).Count() >= 3).MaxOrDefault(x => tarqs.Where(y => y.Distance(x.Position) <= 300).Count());
                     if (MainTarget != null)
                     {
                         if (Program._e.IsReady() && Program.ElaneClear)
                         {
                             Program._e.Cast(MainTarget);
                         }
-                        if (Program._w.IsReady() && Program.WlaneClear && Helper.HasEBuff(MainTarget) && MainTarget.Health <= Helper.Wdamge(MainTarget))
-                        {
-                            Program._w.Cast(MainTarget);
-                        }
                     }
 
-                    MainTarget = tars.FirstOrDefault(x => x.Health <= Helper.Wdamge(x) && Program._w.IsReady() && Program.WlaneClear
-                        && Helper.HasEBuff(x) && tarqs.Where(y => y.Distance(x.Position) <= 300).Count() >= 3);
+                    MainTarget = tars.Where(x => x.Health <= Helper.Wdamge(x) && Program._w.IsReady() && Program.WlaneClear
+                        && Helper.HasEBuff(x) && tarqs.Where(y => y.Distance(x.Position) <= 300).Count() >= 3).MaxOrDefault(x => tarqs.Where(y => y.Distance(x.Position) <= 300).Count());
                     if (MainTarget != null)
                     {
                         //Game.PrintChat("2");
@@ -105,9 +99,10 @@ namespace HeavenStrikeRyze
                         }
                     }
 
-                    MainTarget = tars.FirstOrDefault(x => x.Health <= Helper.Qdamage(x) && Program._q.IsReady() && Program.QlaneClear
+                    MainTarget = tars.Where(x => x.Health <= Helper.Qdamage(x) && Program._q.IsReady() && Program.QlaneClear
                         && Helper.HasEBuff(x) && Program._q.GetPrediction(x).Hitchance >= HitChance.Low
-                        && tarqs.Where(y => y.Distance(x.Position) <= 300).Count() >= 3);
+                        && tarqs.Where(y => y.Distance(x.Position) <= 300).Count() >= 3)
+                        .MaxOrDefault(x => tarqs.Where(y => y.Distance(x.Position) <= 300).Count());
                     if (MainTarget != null)
                     {
                         if (Program._q.IsReady() && Program.QlaneClear)
@@ -116,8 +111,9 @@ namespace HeavenStrikeRyze
                         }
                     }
 
-                    MainTarget = tars.FirstOrDefault(x => x.Health <= Helper.Edamge(x) + Helper.Wdamge(x) && Program._e.IsReady() && Program.ElaneClear && Program._w.IsReady() && Program.WlaneClear
-                        && tarqs.Where(y => y.Distance(x.Position) <= 300).Count() >= 3);
+                    MainTarget = tars.Where(x => x.Health <= Helper.Edamge(x) + Helper.Wdamge(x) && Program._e.IsReady() && Program.ElaneClear && Program._w.IsReady() && Program.WlaneClear
+                        && tarqs.Where(y => y.Distance(x.Position) <= 300).Count() >= 3)
+                        .MaxOrDefault(x => tarqs.Where(y => y.Distance(x.Position) <= 300).Count());
                     if (MainTarget != null)
                     {
                         if (Program._e.IsReady() && Program.ElaneClear && Program._w.IsReady() && Program.WlaneClear)
@@ -126,15 +122,15 @@ namespace HeavenStrikeRyze
                         }
                     }
 
-                    MainTarget = tars.FirstOrDefault(x => x.Health <= Helper.Edamge(x) + Helper.Qdamage(x,true) && Program._e.IsReady() && Program.ElaneClear && Program._q.IsReady() && Program.QlaneClear
+                    MainTarget = tars.Where(x => x.Health <= Helper.Edamge(x) + Helper.Qdamage(x,true) && Program._e.IsReady() && Program.ElaneClear && Program._q.IsReady() && Program.QlaneClear
                         && Program._q.GetPrediction(x).Hitchance >= HitChance.Low
-                        && tarqs.Where(y => y.Distance(x.Position) <= 300).Count() >= 3);
+                        && tarqs.Where(y => y.Distance(x.Position) <= 300).Count() >= 3)
+                        .MaxOrDefault(x => tarqs.Where(y => y.Distance(x.Position) <= 300).Count());
                     if (MainTarget != null)
                     {
                         if (Program._e.IsReady() && Program.ElaneClear && Program._q.IsReady() && Program.QlaneClear)
                         {
                             Program._e.Cast(MainTarget);
-                            Program._q.Cast(Program._q.GetPrediction(MainTarget).UnitPosition);
                         }
                     }
                     

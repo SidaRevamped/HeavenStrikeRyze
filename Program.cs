@@ -57,6 +57,9 @@ namespace HeavenStrikeRyze
             //Combo
             Menu Combo = spellMenu.AddSubMenu(new Menu("Combo", "Combo"));
             Combo.AddItem(new MenuItem("Block", "Smart Block AutoAttack").SetValue(true));
+            Combo.AddItem(new MenuItem("ComboSwitch", "ComboModeSwitch").SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
+            Combo.AddItem(new MenuItem("ComboMode", "ComboMode").SetValue(new StringList(new[] { "Burst","AoE/Shield" }, 0)));
+
 
             //auto
             Menu Auto = spellMenu.AddSubMenu(new Menu("Auto", "Auto"));
@@ -84,7 +87,7 @@ namespace HeavenStrikeRyze
             Draw.AddItem(new MenuItem("DQ", "Draw Q").SetValue(true));
             Draw.AddItem(new MenuItem("DW", "Draw W").SetValue(true));
             Draw.AddItem(new MenuItem("DE", "Draw E").SetValue(true));
-
+            Draw.AddItem(new MenuItem("DrawMode", "Draw Combo Mode").SetValue(true));
             //Attach to root
             _menu.AddToMainMenu();
 
@@ -103,6 +106,7 @@ namespace HeavenStrikeRyze
         }
         //combo
         public static bool BlockAA {get { return _menu.Item("Block").GetValue<bool>(); } }
+        public static string mode { get { return _menu.Item("ComboMode").GetValue<StringList>().SelectedValue; } }
         // auto
         public static bool WAntiGap { get { return _menu.Item("Wantigap").GetValue<bool>(); } }
         public static bool WInterrupt { get { return _menu.Item("Winterrupt").GetValue<bool>(); } }
@@ -131,12 +135,26 @@ namespace HeavenStrikeRyze
             //{
             //    Render.Circle.DrawCircle(item.Position, 75, Color.Aqua);
             //}
+            //var tar = ObjectManager.Get<Obj_AI_Base>().Where(x => Helper.HasEBuff(x)).MaxOrDefault(x => x.Distance(Player.Position));
+            //if (tar != null)
+            //{
+            //    foreach (var item in Helper.GetchainedTarget(tar))
+            //    {
+            //        Render.Circle.DrawCircle(item.Position, 75, Color.Red);
+            //    }
+
+            //}
             if (DrawQ)
                 Render.Circle.DrawCircle(Player.Position, _q.Range, Color.Aqua);
             if (DrawW)
                 Render.Circle.DrawCircle(Player.Position, _w.Range, Color.Purple);
             if (DrawE)
                 Render.Circle.DrawCircle(Player.Position, _e.Range, Color.Yellow);
+            if (_menu.Item("DrawMode").GetValue<bool>())
+            {
+                var x = Drawing.WorldToScreen(Player.Position);
+                Drawing.DrawText(x[0], x[1], Color.White, mode);
+            }
         }
 
         public static void oncast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
@@ -170,10 +188,12 @@ namespace HeavenStrikeRyze
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
+            ComboModeSwitch();
             //if (Helper.CanShield())
             //Game.PrintChat(Helper.CanShield().ToString());
             //Game.PrintChat(Helper.BonusMana.ToString());
             //Game.PrintChat(Helper.Qstack().ToString());
+            //Game.PrintChat(_q.Level.ToString());
             if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 var target = _orbwalker.GetTarget();
@@ -200,6 +220,29 @@ namespace HeavenStrikeRyze
                     _w.Cast(hero);
                 if (_e.IsReady() && Helper.Edamge(hero) >= hero.Health)
                     _e.Cast(hero);
+            }
+        }
+        private static int _lastTick;
+        private static void ComboModeSwitch()
+        {
+            var comboMode = mode;
+            var lasttime = Utils.GameTimeTickCount - _lastTick;
+            if (!_menu.Item("ComboSwitch").GetValue<KeyBind>().Active ||
+                lasttime <= Game.Ping)
+            {
+                return;
+            }
+
+            switch (comboMode)
+            {
+                case "Burst":
+                    _menu.Item("ComboMode").SetValue(new StringList(new[] { "Burst", "AoE/Shield" }, 1));
+                    _lastTick = Utils.GameTimeTickCount + 300;
+                    break;
+                case "AoE/Shield":
+                    _menu.Item("ComboMode").SetValue(new StringList(new[] { "Burst", "AoE/Shield" }, 0));
+                    _lastTick = Utils.GameTimeTickCount + 300;
+                    break;
             }
         }
     }

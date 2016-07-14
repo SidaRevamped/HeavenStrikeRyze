@@ -95,7 +95,9 @@ namespace HeavenStrikeRyze
             {
                 if (HasEBuff(target))
                 {
-                    foreach (var tar in ObjectManager.Get<Obj_AI_Base>().Where(x =>!x.IsAlly && HasEBuff(x) && x.Distance(target) <= 300))
+                    foreach (var tar in ObjectManager.Get<Obj_AI_Base>()
+                        .Where(x =>!x.IsAlly && HasEBuff(x) && !x.IsDead
+                            && GetchainedTarget(x).Any(y => y.NetworkId == target.NetworkId)))
                     {
                         var pred1 = Program._q.GetPrediction(tar);
                         if (pred1.Hitchance >= HitChance.Low)
@@ -105,6 +107,28 @@ namespace HeavenStrikeRyze
                     }
                 }
             }
+        }
+        public static List<Obj_AI_Base> GetchainedTarget(Obj_AI_Base target)
+        {
+            var targets = new List<Obj_AI_Base>();
+            if (!HasEBuff(target))
+                return targets;
+            targets.Add(target);
+            var hasbuff = ObjectManager.Get<Obj_AI_Base>().Where(x => !x.IsAlly && HasEBuff(x) && ! x.IsDead && x.Distance(target) <= 1000);
+            int count = 1;
+            while (count == 1)
+            {
+                count = 2;
+                foreach (var tar in hasbuff)
+                {
+                     if ( HasEBuff(tar) && !tar.IsDead && targets.Any(x => x.Distance(tar.Position) <= 300) && !targets.Any(x => x.NetworkId == tar.NetworkId))
+                    {
+                        targets.Add(tar);
+                        count = 1;
+                    }
+                }
+            }
+            return targets;
         }
     }
 }

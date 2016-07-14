@@ -23,16 +23,18 @@ namespace HeavenStrikeRyze
                 return Player.MaxMana - new double[] { 392, 430, 469, 510, 553, 598, 644, 693, 743, 795, 849, 904, 962, 1021, 1082, 1145, 1210, 1276 }[Player.Level - 1];
             }
         }
-        public static double Qdamage(Obj_AI_Base target)
+        public static double Qdamage(Obj_AI_Base target, bool hasbuffe = false)
         {
+            if (Program._q.Level == 0) return 0;
             double damage = new double[] { 60, 85, 110, 135, 160, 185 }[Program._q.Level - 1]
                 + 0.45 * Player.TotalMagicalDamage
                 + 0.3 * BonusMana;
-            double bonus = HasEBuff(target) ? new double[] { 0.4, 0.55, 0.7, 0.85, 1 }[Program._e.Level - 1] : 0;
+            double bonus = (HasEBuff(target) || hasbuffe) ? new double[] { 0.4, 0.55, 0.7, 0.85, 1 }[Program._e.Level - 1] : 0;
             return Player.CalcDamage(target, Damage.DamageType.Magical, damage * (1 + bonus));
         }
         public static double Wdamge(Obj_AI_Base target)
         {
+            if (Program._w.Level == 0) return 0;
             var damage = new double[] { 80, 100, 120, 140, 160 }[Program._w.Level - 1]
                 + 0.2 * Player.TotalMagicalDamage
                 + 0.1 * BonusMana;
@@ -40,6 +42,7 @@ namespace HeavenStrikeRyze
         }
         public static double Edamge(Obj_AI_Base target)
         {
+            if (Program._e.Level == 0) return 0;
             var damage = new double[] { 50, 75, 100, 125, 150 }[Program._e.Level - 1]
                 + 0.3 * Player.TotalMagicalDamage
                 + 0.2 * BonusMana;
@@ -81,7 +84,7 @@ namespace HeavenStrikeRyze
         }
         public static void CastQTarget(Obj_AI_Base target)
         {
-            if (!target.IsValidTarget(900) || target.IsZombie || !Program._q.IsReady())
+            if (!target.IsValidTarget(Program._q.Range) || target.IsZombie || !Program._q.IsReady())
                 return;
             var pred = Program._q.GetPrediction(target);
             if (pred.Hitchance >= HitChance.Low)

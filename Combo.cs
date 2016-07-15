@@ -34,7 +34,7 @@ namespace HeavenStrikeRyze
                 return;
             var target = TargetSelector.GetTarget(600, TargetSelector.DamageType.Magical);
             var target1 = TargetSelector.GetTarget(Program._q.Range, TargetSelector.DamageType.Magical);
-            if (Program.mode == "AoE/Shield" && Player.Level != 1)
+            if (Program.mode == "AoE/Shield" && Player.Level > 2)
             {
                 var tarqs1 = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.IsValidTarget() && x.IsMinion && x.Distance(Player.Position) <= Program._q.Range);
                 var tars1 = tarqs1.Where(x => x.Distance(Player.Position) <= Program._e.Range);
@@ -87,37 +87,24 @@ namespace HeavenStrikeRyze
                 }
 
             }
-            if (Program.mode == "Burst" || Player.Level == 1)
+            if (Program.mode == "Burst" || Player.Level <= 2)
             {
                 if (target.IsValidTarget() && !target.IsZombie)
                 {
-                    if (!Helper.CanShield())
+                    if (Program._q.IsReady())
                     {
-                        if (Program._q.IsReady())
-                            Helper.CastQTarget(target);
-                        if (Program._e.IsReady())
-                            Program._e.Cast(target);
-                        if (Program._w.IsReady())
-                            Program._w.Cast(target);
+                        Helper.CastQTarget(target, true);
+                        return;
                     }
-                    if (Helper.CanShield())
+                    if (Program._w.IsReady())
                     {
-                        if (Helper.Qstack() == 1)
-                        {
-                            if (Program._e.IsReady())
-                                Program._e.Cast(target);
-                            if (Program._w.IsReady())
-                                Program._w.Cast(target);
-                        }
-                        if (Helper.Qstack() == 2)
-                        {
-                            if (Program._q.IsReady())
-                                Helper.CastQTarget(target);
-                            if (Program._e.IsReady())
-                                Program._e.Cast(target);
-                            if (Program._w.IsReady())
-                                Program._w.Cast(target);
-                        }
+                        Program._w.Cast(target);
+                        return;
+                    }
+                    if (Program._e.IsReady())
+                    {
+                        Program._e.Cast(target);
+                        return;
                     }
                 }
                 else

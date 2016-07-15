@@ -25,6 +25,7 @@ namespace HeavenStrikeRyze
         }
         public static double Qdamage(Obj_AI_Base target, bool hasbuffe = false)
         {
+            if (Program._e.Level == 0) hasbuffe = false;
             if (Program._q.Level == 0) return 0;
             double damage = new double[] { 60, 85, 110, 135, 160, 185 }[Program._q.Level - 1]
                 + 0.45 * Player.TotalMagicalDamage
@@ -82,7 +83,7 @@ namespace HeavenStrikeRyze
                 return true;
             return false; 
         }
-        public static void CastQTarget(Obj_AI_Base target)
+        public static void CastQTarget(Obj_AI_Base target, bool forceQ = false)
         {
             if (!target.IsValidTarget(Program._q.Range) || target.IsZombie || !Program._q.IsReady())
                 return;
@@ -105,6 +106,14 @@ namespace HeavenStrikeRyze
                             Program._q.Cast(pred1.CastPosition);
                         }
                     }
+                }
+            }
+            if (forceQ)
+            {
+                var predF = Program._q2.GetPrediction(target);
+                if (predF.Hitchance >= HitChance.Low)
+                {
+                    Program._q2.Cast(pred.CastPosition);
                 }
             }
         }

@@ -205,8 +205,12 @@ namespace HeavenStrikeRyze
             //Game.PrintChat(Helper.BonusMana.ToString());
             //Game.PrintChat(Helper.Qstack().ToString());
             //Game.PrintChat(Player.ManaPercent.ToString());
+<<<<<<< HEAD
             if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None && AutoTear && Player.ManaPercent >= AutoTearM
                 && Player.CountEnemiesInRange(1500) == 0)
+=======
+            if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None && AutoTear && Player.ManaPercent >= AutoTearM)
+>>>>>>> origin/master
             {
                 if (ItemData.Tear_of_the_Goddess.GetItem().IsOwned() || ItemData.Archangels_Staff.GetItem().IsOwned()
                     || ItemData.Manamune.GetItem().IsOwned())

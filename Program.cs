@@ -65,7 +65,8 @@ namespace HeavenStrikeRyze
             Menu Auto = spellMenu.AddSubMenu(new Menu("Auto", "Auto"));
             Auto.AddItem(new MenuItem("Wantigap", "W anti gap").SetValue(true));
             Auto.AddItem(new MenuItem("Winterrupt", "W interrupt").SetValue(true));
-
+            Auto.AddItem(new MenuItem("AutoTear", "Auto Stack Tear").SetValue(true));
+            Auto.AddItem(new MenuItem("AutoTearM", "Min Mana Stack Tear").SetValue(new Slider(40, 0, 100)));
             //Clear
             Menu JungClear = spellMenu.AddSubMenu(new Menu("JC", "Jungle Clear"));
             JungClear.AddItem(new MenuItem("QJC", "use Q Jungle Clear").SetValue(true));
@@ -88,6 +89,8 @@ namespace HeavenStrikeRyze
             Draw.AddItem(new MenuItem("DW", "Draw W").SetValue(true));
             Draw.AddItem(new MenuItem("DE", "Draw E").SetValue(true));
             Draw.AddItem(new MenuItem("DrawMode", "Draw Combo Mode").SetValue(true));
+            Draw.AddItem(new MenuItem("DRmini", "Draw R MiniMap").SetValue(true));
+            Draw.AddItem(new MenuItem("DR", "Draw R").SetValue(true));
             //Attach to root
             _menu.AddToMainMenu();
 
@@ -110,6 +113,8 @@ namespace HeavenStrikeRyze
         // auto
         public static bool WAntiGap { get { return _menu.Item("Wantigap").GetValue<bool>(); } }
         public static bool WInterrupt { get { return _menu.Item("Winterrupt").GetValue<bool>(); } }
+        public static bool AutoTear { get{return _menu.Item("AutoTear").GetValue<bool>(); } }
+        public static int AutoTearM { get { return _menu.Item("AutoTearM").GetValue<Slider>().Value; } }
         // jungleclear
         public static bool QjungClear { get { return _menu.Item("QJC").GetValue<bool>(); } }
         public static bool WjungClear { get { return _menu.Item("WJC").GetValue<bool>(); } }
@@ -127,6 +132,8 @@ namespace HeavenStrikeRyze
         public static bool DrawQ { get { return _menu.Item("DQ").GetValue<bool>(); } }
         public static bool DrawW { get { return _menu.Item("DW").GetValue<bool>(); } }
         public static bool DrawE { get { return _menu.Item("DE").GetValue<bool>(); } }
+        public static bool DrawR { get { return _menu.Item("DR").GetValue<bool>(); } }
+        public static bool DrawRMini { get { return _menu.Item("DRmini").GetValue<bool>(); } }
 
         private static void Drawing_OnDraw(EventArgs args)
         {
@@ -150,6 +157,10 @@ namespace HeavenStrikeRyze
                 Render.Circle.DrawCircle(Player.Position, _w.Range, Color.Purple);
             if (DrawE)
                 Render.Circle.DrawCircle(Player.Position, _e.Range, Color.Yellow);
+            if (DrawR)
+                Render.Circle.DrawCircle(Player.Position, Helper.RRAnge(), Color.Aqua);
+            if (DrawRMini)
+                Utility.DrawCircle(Player.Position, Helper.RRAnge(), Color.Aqua, 1, 23, true);
             if (_menu.Item("DrawMode").GetValue<bool>())
             {
                 var x = Drawing.WorldToScreen(Player.Position);
@@ -193,7 +204,18 @@ namespace HeavenStrikeRyze
             //Game.PrintChat(Helper.CanShield().ToString());
             //Game.PrintChat(Helper.BonusMana.ToString());
             //Game.PrintChat(Helper.Qstack().ToString());
-            //Game.PrintChat(_q.Level.ToString());
+            //Game.PrintChat(Player.ManaPercent.ToString());
+            if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None && AutoTear && Player.ManaPercent >= AutoTearM)
+            {
+                if (ItemData.Tear_of_the_Goddess.GetItem().IsOwned() || ItemData.Archangels_Staff.GetItem().IsOwned()
+                    || ItemData.Manamune.GetItem().IsOwned())
+                {   
+                    if (_q.IsReady())
+                    {
+                        _q.Cast(Player.Position);
+                    }
+                }
+            }
             if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 var target = _orbwalker.GetTarget();

@@ -32,8 +32,8 @@ namespace HeavenStrikeRyze
                 return;
 
             //Spells
-            _q = new Spell(SpellSlot.Q, 900);
-            _q2 = new Spell(SpellSlot.Q, 900); // xxx bounce range
+            _q = new Spell(SpellSlot.Q, 1000);
+            _q2 = new Spell(SpellSlot.Q, 1000); // xxx bounce range
             _w = new Spell(SpellSlot.W, 600); // 600
             _e = new Spell(SpellSlot.E, 600); // 200 bounce 
             _r = new Spell(SpellSlot.R); // xx ramge
